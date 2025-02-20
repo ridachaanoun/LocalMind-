@@ -1,52 +1,139 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All Questions</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100">
+@extends('layouts.app')
 
-    <div class="container mx-auto p-6">
-        <h2 class="text-2xl font-bold mb-6">All Questions</h2>
+@section('content')
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900">Community Questions</h1>
+                <p class="mt-2 text-gray-600">Explore questions from your local community</p>
+            </div>
+            <a href="{{ route('questions.create') }}" 
+               class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md transition">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+                Ask Question
+            </a>
+        </div>
 
+        <!-- Search Bar -->
+        <div class="mb-8">
+            <div class="relative">
+                <input type="text" 
+                       placeholder="Search questions by keyword or location..." 
+                       class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400">
+                <svg class="w-6 h-6 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Success Message -->
         @if(session('success'))
-            <div class="bg-green-500 text-white p-3 mb-4 rounded">
-                {{ session('success') }}
+            <div class="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-md">
+                <div class="flex items-center">
+                    <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    <p class="text-green-700">{{ session('success') }}</p>
+                </div>
             </div>
         @endif
 
-        @foreach ($questions as $question)
-            <div class="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h3 class="text-lg font-semibold">{{ $question->title }}</h3>
-                <p class="text-gray-700">{{ $question->content }}</p>
-                <p class="text-sm text-gray-500">Asked by {{ $question->user->name ?? 'Anonymous' }}</p>
-
-                <!-- Answers Section -->
-                <div class="mt-4">
-                    <h4 class="font-bold">Answers:</h4>
-                    @foreach ($question->answers as $answer)
-                        <div class="bg-gray-200 p-2 rounded my-2">
-                            <p>{{ $answer->content }}</p>
-                            <span class="text-sm text-gray-600">By {{ $answer->user->name ?? 'Anonymous' }}</span>
+        <!-- Questions List -->
+        <div class="space-y-6">
+            @foreach($questions as $question)
+                <div class="bg-white rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition">
+                    <div class="p-6">
+                        <!-- Question Header -->
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h2 class="text-xl font-semibold text-gray-900 hover:text-indigo-600">
+                                    <a href="{{ route('questions.show', $question->id) }}">{{ $question->title }}</a>
+                                </h2>
+                                <div class="flex items-center mt-2 space-x-4 text-sm text-gray-500">
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                        </svg>
+                                        {{ $question->user->name }}
+                                    </div>
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        {{ $question->created_at->diffForHumans() }}
+                                    </div>
+                                    <div class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                        </svg>
+                                        {{ $question->location }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Favorite Button -->
+                            <div>
+                                @if($question->favorites->where('user_id', auth()->id())->count())
+                                    <form action="{{ route('favorites.destroy', $question->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" 
+                                                class="text-red-500 hover:text-red-600 transition">
+                                            <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                                                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('favorites.store', $question->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" 
+                                                class="text-gray-400 hover:text-red-500 transition">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
                         </div>
-                    @endforeach
+
+                        <!-- Question Content -->
+                        <p class="text-gray-600 mb-4">{{ $question->content }}</p>
+
+                        <!-- Answer Form -->
+                        <div class="mt-6 border-t pt-4">
+                            <form action="{{ route('questions.answer', $question->id) }}" method="POST" 
+                                  class="flex items-center space-x-3">
+                                @csrf
+                                <input type="text" name="content" 
+                                       class="flex-1 rounded-lg border border-gray-300 px-4 py-2 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400" 
+                                       placeholder="Add your answer...">
+                                <button type="submit" 
+                                        class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
+                                    Answer
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                 </div>
+            @endforeach
+        </div>
 
-                <!-- Answer Form -->
-                @auth
-                    <form action="{{ route('questions.answer', $question->id) }}" method="POST" class="mt-4">
-                        @csrf
-                        <textarea name="content" rows="2" class="w-full p-2 border rounded" placeholder="Write your answer..."></textarea>
-                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Submit</button>
-                    </form>
-                @else
-                    <p class="text-red-500 mt-3">You must be logged in to answer.</p>
-                @endauth
-            </div>
-        @endforeach
+        <!-- Pagination -->
+        <div class="mt-8">
+            {{ $questions->links() }}
+        </div>
     </div>
-
-</body>
-</html>
+</div>
+@endsection
