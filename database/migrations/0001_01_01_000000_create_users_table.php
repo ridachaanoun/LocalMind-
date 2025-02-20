@@ -3,9 +3,10 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
+use Laravel\Sanctum\HasApiTokens;
 return new class extends Migration
 {
+    use HasApiTokens;
     /**
      * Run the migrations.
      */
