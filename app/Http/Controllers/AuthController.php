@@ -36,7 +36,7 @@ class AuthController extends Controller
 
         Auth::login($user); // Auto-login after registration
 
-        return redirect()->route('dashboard')->with('success', 'Account created successfully!');
+        return redirect()->route('questions.index')->with('success', 'Account created successfully!');
     }
 
     public function showLoginForm()
@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate(); // Prevent session fixation attacks
-            return redirect()->route('dashboard')->with('success', 'Login successful!');
+            return redirect()->route('questions.index')->with('success', 'Login successful!');
         }
 
         return back()->withErrors([
