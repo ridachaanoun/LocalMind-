@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 
+use App\Http\Controllers\QuestionController;
+
 Route::get('/', function () {
     return view("welcome");
 });
@@ -31,3 +33,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middl
 Route::get('/dashboard', function () {
     return "hi";
 })->middleware('auth')->name('dashboard');
+
+
+
+Route::resource('questions', QuestionController::class)->middleware('auth');
