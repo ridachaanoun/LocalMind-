@@ -8,11 +8,22 @@ use Illuminate\Support\Facades\Auth;
 
 class QuestionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $questions = Question::latest()->paginate(10);
+        $query = Question::query();
+    
+        // Filter by search keyword
+        if ($request->has('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%')
+                  ->orWhere('content', 'like', '%' . $request->search . '%')
+                  ->orWhere('location', 'like', '%' . $request->search . '%');
+        }
+    
+        $questions = $query->paginate(10);
+    
         return view('questions.index', compact('questions'));
     }
+    
 
     public function create()
     {

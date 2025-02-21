@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header Section -->
@@ -19,16 +20,19 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="mb-8">
-            <div class="relative">
-                <input type="text" 
-                       placeholder="Search questions by keyword or location..." 
-                       class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400">
-                <svg class="w-6 h-6 text-gray-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-            </div>
-        </div>
+        <form method="GET" action="{{ route('questions.index') }}">
+    <input type="text" name="search" placeholder="Search by keyword or location..."
+           value="{{ request('search') }}"
+           class="w-full px-4 py-3 pl-12 rounded-lg border border-gray-300 focus:ring-2 focus:ring-indigo-200 focus:border-indigo-400">
+    
+    <!-- Hidden fields to send user's coordinates -->
+    <input type="hidden" name="latitude" id="latitude">
+    <input type="hidden" name="longitude" id="longitude">
+
+    <button type="submit" class="mt-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+        Search
+    </button>
+</form>
 
         <!-- Success Message -->
         @if(session('success'))
